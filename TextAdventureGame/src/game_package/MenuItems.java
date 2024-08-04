@@ -1,6 +1,15 @@
 package game_package;
+import java.util.Arrays;
 
 public class MenuItems {
+	public final static String NORTH = "north";
+	public final static String EAST = "east";
+	public final static String SOUTH = "south";
+	public final static String WEST = "west";
+	public final static String ATTACK = "attack";
+	public final static String EXAMINE = "examine";
+	public final static String HELP = "help";
+	
 	public void listInvalidSelection() {
 		System.out.println("Invalid Selection!");
 	}
@@ -38,4 +47,23 @@ public class MenuItems {
 		System.out.println("You approach the " + selectedEnemy.getName() + " with your dagger drawn.");
 	}
 	
+	public void listRoom(Room room, String enemyNames, String itemNames) {
+		System.out.println("Room items:  " + itemNames);
+		System.out.println("Room location: " + room.getLocation());
+		System.out.println("Room coordinates: " + Arrays.toString(room.getCords()));
+		if (room.getEnemies().size() > 0) {
+			System.out.println("Enemies:  " + enemyNames);
+		} else {
+			System.out.println("Enemies: None");
+		}
+		System.out.println("Available Exits: " + room.getAvailableExits());
+	}
+
+	public void listBadExit(String selection) {
+		System.out.println("You attempt to exit " + selection + ", but there's a literal fucking wall in the way");
+	}
+	
+	public void listMovement(String selection) {
+		System.out.println("You moved " + selection + "!");
+	}
 }

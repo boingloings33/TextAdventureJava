@@ -16,14 +16,14 @@ public class Main {
 
 		while (user.getIsExplorting()) {
 			selection = input.nextLine().toLowerCase();
-			if (selection.equals("help")) {
+			if (selection.equals(MenuItems.HELP)) {
 				commands.listCommands();
-			} else if (selection.equals("examine")) {
+			} else if (selection.equals(MenuItems.EXAMINE)) {
 				examineRoom(user.getCurrentRoom());
-			} else if (selection.equals("north") || selection.equals("east") || selection.equals("south")
-					|| selection.equals("west")) {
+			} else if (selection.equals(MenuItems.NORTH) || selection.equals(MenuItems.EAST) || selection.equals(MenuItems.SOUTH)
+					|| selection.equals(MenuItems.WEST)) {
 				 user.setCurrentRoom(moveRooms(user.getCurrentRoom(), input, selection)); 
-			} else if (selection.startsWith("attack")) {
+			} else if (selection.startsWith(MenuItems.ATTACK)) {
 				enterBattle(user, user.getCurrentRoom(), selection);
 			} else {
 				commands.listInvalidSelection();
@@ -33,8 +33,7 @@ public class Main {
 		}
 	}
 
-	private static void examineRoom(Room room) {
-
+	private static void examineRoom(Room room) {	
 		// Get enemy names
 		String[] enemyNamesArr = new String[room.getEnemies().size()];
 		String enemyNames;
@@ -50,16 +49,7 @@ public class Main {
 			itemNamesArr[i] = room.getItems()[i];
 		}
 		itemNames = String.join(", ", itemNamesArr);
-
-		System.out.println("Room items:  " + itemNames);
-		System.out.println("Room location: " + room.getLocation());
-		System.out.println("Room coordinates: " + Arrays.toString(room.getCords()));
-		if (room.getEnemies().size() > 0) {
-			System.out.println("Enemies:  " + enemyNames);
-		} else {
-			System.out.println("Enemies: None");
-		}
-		System.out.println("Available Exits: " + room.getAvailableExits());
+		commands.listRoom(room, enemyNames, itemNames);
 	}
 
 	private static Room moveRooms(Room currentRoom, Scanner input, String selection) {
@@ -67,17 +57,16 @@ public class Main {
 		Room[] rooms = generatedRooms.getRooms();
 		Room updatedRoom = currentRoom;
 
-		if (selection.equals("north") && currentRoom.getNorthExit() == true) {
+		if (selection.equals(MenuItems.NORTH) && currentRoom.getNorthExit() == true) {
 			updatedRoom = matchCords(currentRoom, updatedRoom, rooms, selection, 0, 1);
-		} else if (selection.equals("east") && currentRoom.getEasthExit() == true) {
+		} else if (selection.equals(MenuItems.EAST) && currentRoom.getEasthExit() == true) {
 			updatedRoom = matchCords(currentRoom, updatedRoom, rooms, selection, 1, 0);
-		} else if (selection.equals("south") && currentRoom.getSouthExit() == true) {
+		} else if (selection.equals(MenuItems.SOUTH) && currentRoom.getSouthExit() == true) {
 			updatedRoom = matchCords(currentRoom, updatedRoom, rooms, selection, 0, -1);
-		} else if (selection.equals("west") && currentRoom.getWestExit() == true) {
+		} else if (selection.equals(MenuItems.WEST) && currentRoom.getWestExit() == true) {
 			updatedRoom = matchCords(currentRoom, updatedRoom, rooms, selection, -1, 0);
 		} else {
-			System.out.println("You attempt to exit " + selection + ", but there's a literal fucking wall in the way");
-
+			commands.listBadExit(selection);
 		}
 
 		return updatedRoom;
@@ -89,7 +78,7 @@ public class Main {
 		int[] updatedChords;
 		currentChords = currentRoom.getCords();
 
-		System.out.println("You moved " + selection + "!");
+		commands.listMovement(selection);
 		updatedChords = new int[] { currentChords[0] + cordMovementX, currentChords[1] + cordMovementY };
 		for (int i = 0; i < rooms.length; i++) {
 			if (Arrays.equals(rooms[i].getCords(), updatedChords)) {
@@ -127,7 +116,7 @@ public class Main {
 		int damageGiven;
 		boolean isPlayerTurn;
 
-		if (selection.contains("attack")) {
+		if (selection.contains(MenuItems.ATTACK)) {
 			isPlayerTurn = true;
 			commands.listApproachEnemy(selectedEnemy);
 		} else {
@@ -138,18 +127,22 @@ public class Main {
 			if (isPlayerTurn) {
 				commands.listBattleOptions();
 				battleSelection = input.nextInt();
-				if (battleSelection == 1) {
+				if (battleSelection == 1 && selectedEnemy.isAlive()) {
 					damageGiven = attack(selectedEnemy, user, isPlayerTurn);
 					selectedEnemy.setHp(selectedEnemy.getHp() - damageGiven);
 					commands.listDamageToEnemy(selectedEnemy, damageGiven);
 					isPlayerTurn = false;
 				}
 			}
+			if (!selectedEnemy.isAlive()) {
+				isPlayerTurn = true;
+				selectedEnemy.death(user);
+				break;
+			}
 			if (!isPlayerTurn) {
 				damageGiven = attack(selectedEnemy, user, isPlayerTurn);
 				user.setHp(user.getHp() - damageGiven);
-
-				if (user.getHp() > 0) {
+				if (user.isAlive()) {
 					commands.listDamageToPlayer(user, selectedEnemy, damageGiven);
 					isPlayerTurn = true;
 				} else {

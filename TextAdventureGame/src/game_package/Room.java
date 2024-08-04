@@ -6,7 +6,7 @@ import java.util.List;
 public class Room {
 	private int[] coordinates = new int[2];
 	private String[] items;
-	List<Enemy> enemies = new ArrayList<>();
+	List<Enemy> enemies = new ArrayList<Enemy>();
 	private String location;
 	private boolean northExit;
 	private boolean eastExit;
@@ -32,6 +32,11 @@ public class Room {
 	public List<Enemy> getEnemies() {
 		return this.enemies;
 	}
+	
+	public void setEnemies(List<Enemy> enemies){
+		this.enemies = enemies;
+	}
+	
 
 	public String[] getItems() {
 		return this.items;

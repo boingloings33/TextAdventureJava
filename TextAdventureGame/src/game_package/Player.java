@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Player {
 	private int lvl = 1;
-	private int maxHp = 5;
+	private int maxHp = 35;
 	private int hp = maxHp;
 	private int xp = 0;
 	private int atk = 1;

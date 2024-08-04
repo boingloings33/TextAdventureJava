@@ -1,4 +1,7 @@
 package game_package;
+import java.util.List;
+import java.util.UUID;
+
 
 public class Enemy {
 	private String name;
@@ -8,6 +11,8 @@ public class Enemy {
 	private int atk;
 	private int def;
 	private int crit;
+	String id = UUID.randomUUID().toString();
+
 
 	public Enemy(String name, int lvl, int maxHp, int atk, int def, int crit) {
 		this.name = name;
@@ -65,6 +70,23 @@ public class Enemy {
 
 	public int getCrit() {
 		return this.crit;
+	}
+	
+	public String getId() {
+		return this.id;
+	}
+	
+	public void death(Player user) {
+		List<Enemy> enemyList = user.getCurrentRoom().getEnemies();
+		System.out.println("You have slain the " + this.name + "!");
+		for (int i = 0; i < enemyList.size(); i++) {
+			if(enemyList.get(i).getId() == this.id) {
+				enemyList.remove(i);
+			}
+		}
+		user.getCurrentRoom().setEnemies(enemyList);
+		user.setIsExploring(true);
+		
 	}
 	
 
