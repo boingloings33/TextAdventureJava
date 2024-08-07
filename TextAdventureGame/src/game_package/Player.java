@@ -3,24 +3,31 @@ package game_package;
 import java.util.Scanner;
 
 public class Player {
-	private int lvl = 1;
+
+	public final static int[] LEVELS_XP_REQUIRED = {20, 300, 700};
+	
+	private Item weapon = null;
+	private Item armor = null;
+	private Item[] playerSlots = new Item[2];
+	private Item[] inventory = new Item[10];
+	private GeneratedRooms generatedRooms = new GeneratedRooms();
+	private Room[] rooms = generatedRooms.getRooms();
+	private Room currentRoom = rooms[0];
+
+	private int level = 1;
 	private int maxHp = 35;
 	private int hp = maxHp;
 	private int xp = 0;
 	private int atk = 1;
-	private int weaponAtk = 0;
-	private int armorDef = 0;
+	private int weaponAtk;
+	private int armorDef;
 	private int def = 1;
 	private int crit = 1;
 	private String name;
 	private boolean isExploring = true;
 	private boolean isInBattle = false;
-	private Equipable weapon;
-	private Equipable armor;
-	private GeneratedRooms generatedRooms = new GeneratedRooms();
-	private Room[] rooms = generatedRooms.getRooms();
-	private Room currentRoom = rooms[0];
-	
+
+	// Player general traits
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -29,12 +36,42 @@ public class Player {
 		return this.name;
 	}
 
+	public void setLvl(int lvl) {
+		this.level = lvl;
+	}
+
+	public int getLvl() {
+		return this.level;
+	}
+
 	public void setXP(int xp) {
-		this.xp = xp;
+		this.xp += xp;
+		for (int i = 0; i < LEVELS_XP_REQUIRED.length; i++) {
+			if(this.level == i + 1 && this.xp >= LEVELS_XP_REQUIRED[i]) {
+				levelUp();
+			}
+		}
 	}
 
 	public int getXP() {
 		return this.xp;
+	}
+
+	// Player combat traits
+	public void setMaxHp(int maxHp) {
+		this.maxHp = maxHp;
+	}
+
+	public int getMaxHp() {
+		return this.maxHp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public int getHp() {
+		return this.hp;
 	}
 
 	public void setAtk(int atk) {
@@ -44,14 +81,6 @@ public class Player {
 	public int getAtk() {
 		return this.atk;
 	}
-	
-	public void setWeaponAtk(int weaponAtk) {
-		this.weaponAtk = atk;
-	}
-
-	public int getWeaponAtk() {
-		return this.weaponAtk;
-	}
 
 	public void setDef(int def) {
 		this.def = def;
@@ -60,7 +89,44 @@ public class Player {
 	public int getDef() {
 		return this.def;
 	}
-	
+
+	public void setCrit(int crit) {
+		this.crit = crit;
+	}
+
+	public int getCrit() {
+		return this.crit;
+	}
+
+	// Player weapon and armor
+	public void setArmor(Item armor) {
+		this.armor = armor;
+		this.armorDef = armor.getDefenseBoost();
+		this.playerSlots[0] = armor;
+	}
+
+	public Item getArmor() {
+		return this.armor;
+	}
+
+	public void setWeapon(Item weapon) {
+		this.weapon = weapon;
+		this.weaponAtk = weapon.getAttackBoost();
+		this.playerSlots[1] = weapon;
+	}
+
+	public Item getWeapon() {
+		return this.weapon;
+	}
+
+	public void setWeaponAtk(int weaponAtk) {
+		this.weaponAtk = atk;
+	}
+
+	public int getWeaponAtk() {
+		return this.weaponAtk;
+	}
+
 	public void setArmorDef(int armorDef) {
 		this.armorDef = armorDef;
 	}
@@ -69,62 +135,15 @@ public class Player {
 		return this.armorDef;
 	}
 
-	public void setLvl(int lvl) {
-		this.lvl = lvl;
-	}
-
-	public int getLvl() {
-		return this.lvl;
-	}
-
-	public void setMaxHp(int maxHp) {
-		this.maxHp = maxHp;
-	}
-
-	public int getMaxHp() {
-		return this.maxHp;
-	}
-	
-	public void setHp(int hp) {
-		this.hp = hp;
-	}
-	
-	public int getHp() {
-		return this.hp;
-	}
-	
-	public void setCrit(int crit) {
-		this.crit = crit;
-	}
-	
+	// Player state
 	public void setCurrentRoom(Room room) {
 		this.currentRoom = room;
 	}
-	
+
 	public Room getCurrentRoom() {
 		return this.currentRoom;
 	}
 
-	public int getCrit() {
-		return this.crit;
-	}
-
-	public void setArmor(Equipable armor) {
-		this.armor = armor;
-	}
-	
-	public Equipable getArmor() {
-		return this.armor;
-	}
-	
-	public void setWeapon(Equipable weapon) {
-		this.weapon = weapon;
-	}
-	
-	public Equipable getWeapon() {
-		return this.weapon;
-	}
-	
 	public void setIsExploring(boolean isExploring) {
 		this.isExploring = isExploring;
 		this.isInBattle = !isInBattle;
@@ -138,23 +157,50 @@ public class Player {
 		this.isInBattle = isInBattle;
 		this.isExploring = !isExploring;
 	}
-	
+
 	public boolean getIsInBattle() {
 		return this.isInBattle;
 	}
 	
+	public void levelUp() {
+		this.level = this.level + 1;
+		this.maxHp = this.maxHp + 10;
+		this.atk = this.atk + 1;
+		this.def = this.def + 1;
+		System.out.println("You leveled up!");
+	}
+
+	// Player inventory
+	public void setInventory(Item item) {
+		for (int i = 0; i < this.inventory.length; i++) {
+			if (this.inventory[i] != null) {
+				this.inventory[i] = item;
+			}
+		}
+	}
+
+	public Item[] getInventory() {
+		return this.inventory;
+	}
+
+	public Item[] getPlayerSlots() {
+		return this.playerSlots;
+	}
+
+	// Player misc
 	public boolean isAlive() {
 		return hp > 0;
 	}
-	
+
 	public void death() {
 		System.out.println("You died!");
-		System.out.println("You find yourself back at the start of the cave. I guess something must have revived you...");
+		System.out
+				.println("You find yourself back at the start of the cave. I guess something must have revived you...");
 		this.hp = this.maxHp / 2;
 		this.isExploring = true;
 		this.currentRoom = this.rooms[0];
 	}
-	
+
 	public void playerSetup(Scanner input) {
 		System.out.println(
 				"After spending weeks wandering the Goose Creek, a heavy rain crashes down as you stumble into a small cavern... ");
@@ -163,5 +209,6 @@ public class Player {
 		this.name = input.nextLine();
 		System.out.println(this.name + " is it? Well here's to hoping you try harder than your parents did.");
 		System.out.println("Take this dagger, it's dangerous in here.");
+		setWeapon(GeneratedWeapons.bronzeDagger);
 	}
 }

@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneratedRooms {
-	private Enemy rat = new Enemy("Rat", 1, 1, 1, 1, 1);
-	private Enemy bat = new Enemy("Bat", 1, 5, 1, 1, 1);
 	private Room room00 = new Room(new int[] { 0, 0 }, new String[] { "Rusty dagger", "Empty Bowl" },
-			generateEnemyList(rat, bat), "The Cave", true, false, false, false);
-	private Room room01 = new Room(new int[] { 0, 1 }, new String[] { "Empty Cup" }, generateEnemyList(rat, bat),
+			generateEnemyList(new Enemy("Rat", 1)), "The Cave", true, false, false, false);
+	private Room room01 = new Room(new int[] { 0, 1 }, new String[] { "Empty Cup" }, generateEnemyList(new Enemy("Rat", 1), new Enemy("Bat", 2)),
 			"The Cave", false, false, true, false);
 	private Room[] rooms = { room00, room01 };
 	
@@ -21,7 +19,7 @@ public class GeneratedRooms {
 	public List<Enemy> generateEnemyList(Enemy... enemyArr) {
 		List<Enemy> enemies = new LinkedList<Enemy>(Arrays.asList(enemyArr));
 		return enemies;
-	}
+	}	
 	
 	public Room[] getRooms() {
 		return this.rooms;

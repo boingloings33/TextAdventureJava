@@ -6,11 +6,12 @@ import java.util.List;
 
 public class Main {
 	static MenuItems commands = new MenuItems();
+
 	public static void main(String[] arg) {
 		String selection = "";
 		Scanner input = new Scanner(System.in);
 		Player user = new Player();
-		
+
 		user.playerSetup(input);
 		commands.listHelp();
 
@@ -18,13 +19,23 @@ public class Main {
 			selection = input.nextLine().toLowerCase();
 			if (selection.equals(MenuItems.HELP)) {
 				commands.listCommands();
-			} else if (selection.equals(MenuItems.EXAMINE)) {
+			} else if (selection.equals(MenuItems.ROOM)) {
 				examineRoom(user.getCurrentRoom());
-			} else if (selection.equals(MenuItems.NORTH) || selection.equals(MenuItems.EAST) || selection.equals(MenuItems.SOUTH)
-					|| selection.equals(MenuItems.WEST)) {
-				 user.setCurrentRoom(moveRooms(user.getCurrentRoom(), input, selection)); 
+			} else if (selection.equals(MenuItems.NORTH) || selection.equals(MenuItems.EAST)
+					|| selection.equals(MenuItems.SOUTH) || selection.equals(MenuItems.WEST)) {
+				user.setCurrentRoom(moveRooms(user.getCurrentRoom(), input, selection));
 			} else if (selection.startsWith(MenuItems.ATTACK)) {
 				enterBattle(user, user.getCurrentRoom(), selection);
+			} else if (selection.equals(MenuItems.WEAPON)) {
+				commands.listEquippedWeapon(user);
+			} else if (selection.equals(MenuItems.ARMOR)) {
+				commands.listEquippedArmor(user);
+			} else if (selection.equals(MenuItems.INVENTORY)){
+				commands.listInventory(user);
+			} else if (selection.equals(MenuItems.EQUIPS)){
+				commands.listPlayerSlots(user);
+			} else if (selection.equals(MenuItems.LEVEL)){
+				commands.listLevel(user);
 			} else {
 				commands.listInvalidSelection();
 				commands.listHelp();
@@ -33,7 +44,7 @@ public class Main {
 		}
 	}
 
-	private static void examineRoom(Room room) {	
+	private static void examineRoom(Room room) {
 		// Get enemy names
 		String[] enemyNamesArr = new String[room.getEnemies().size()];
 		String enemyNames;
@@ -161,7 +172,7 @@ public class Main {
 
 		if (isPlayerTurn) {
 			if (user.getAtk() + user.getLvl() + user.getWeaponAtk() > selectedEnemy.getDef() / 4) {
-				damageGiven = user.getAtk() + user.getWeaponAtk() + user.getWeaponAtk() - selectedEnemy.getDef() / 4;
+				damageGiven = user.getAtk() + user.getWeaponAtk() - selectedEnemy.getDef() / 4;
 			} else {
 				damageGiven = 1;
 			}

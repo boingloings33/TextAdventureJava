@@ -11,7 +11,8 @@ public class Enemy {
 	private int atk;
 	private int def;
 	private int crit;
-	String id = UUID.randomUUID().toString();
+	private int xp;
+	private String id = UUID.randomUUID().toString();
 
 
 	public Enemy(String name, int lvl, int maxHp, int atk, int def, int crit) {
@@ -22,6 +23,18 @@ public class Enemy {
 		this.atk = atk;
 		this.def = def;
 		this.crit = crit;
+		this.xp = lvl * 10; 
+	}
+	
+	public Enemy(String name, int lvl) {
+		this.name = name;
+		this.lvl = lvl;
+		this.maxHp = lvl * 5;
+		this.hp = maxHp;
+		this.atk = lvl;
+		this.def = lvl;
+		this.crit = lvl;
+		this.xp = lvl * 10; 
 	}
 
 	public boolean isAlive() {
@@ -79,11 +92,13 @@ public class Enemy {
 	public void death(Player user) {
 		List<Enemy> enemyList = user.getCurrentRoom().getEnemies();
 		System.out.println("You have slain the " + this.name + "!");
+		System.out.println("You gained " + this.xp + " xp!");
 		for (int i = 0; i < enemyList.size(); i++) {
 			if(enemyList.get(i).getId() == this.id) {
 				enemyList.remove(i);
 			}
 		}
+		user.setXP(this.xp);
 		user.getCurrentRoom().setEnemies(enemyList);
 		user.setIsExploring(true);
 		
