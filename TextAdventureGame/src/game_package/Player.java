@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class Player {
 
-	public final static int[] LEVELS_XP_REQUIRED = {20, 300, 700};
-	
+	public final static int[] LEVELS_XP_REQUIRED = { 20, 300, 700 };
+
 	private Item weapon = null;
 	private Item armor = null;
 	private Item[] playerSlots = new Item[2];
@@ -47,7 +47,7 @@ public class Player {
 	public void setXP(int xp) {
 		this.xp += xp;
 		for (int i = 0; i < LEVELS_XP_REQUIRED.length; i++) {
-			if(this.level == i + 1 && this.xp >= LEVELS_XP_REQUIRED[i]) {
+			if (this.level == i + 1 && this.xp >= LEVELS_XP_REQUIRED[i]) {
 				levelUp();
 			}
 		}
@@ -111,8 +111,10 @@ public class Player {
 
 	public void setWeapon(Item weapon) {
 		this.weapon = weapon;
-		this.weaponAtk = weapon.getAttackBoost();
 		this.playerSlots[1] = weapon;
+		if (this.weapon != null) {
+			this.weaponAtk = weapon.getAttackBoost();
+		}
 	}
 
 	public Item getWeapon() {
@@ -161,7 +163,7 @@ public class Player {
 	public boolean getIsInBattle() {
 		return this.isInBattle;
 	}
-	
+
 	public void levelUp() {
 		this.level = this.level + 1;
 		this.maxHp = this.maxHp + 10;
@@ -210,5 +212,65 @@ public class Player {
 		System.out.println(this.name + " is it? Well here's to hoping you try harder than your parents did.");
 		System.out.println("Take this dagger, it's dangerous in here.");
 		setWeapon(GeneratedWeapons.bronzeDagger);
+	}
+
+	public void removeWeapon() {
+		if (this.weapon != null) {
+			for (int i = 0; i < this.inventory.length; i++) {
+				if (this.inventory[i] == null) {
+					this.inventory[i] = this.weapon;
+					System.out.println("You have unsheathed your " + this.weapon.getName());
+					setWeapon(null);
+					break;
+				} else {
+					System.out.println("You're inventory is full!");
+				}
+			}
+		} else {
+			System.out.println("You have no weapon equipped!");
+		}
+	}
+	
+	public void removeArmor() {
+		if (this.armor != null) {
+			for (int i = 0; i < this.inventory.length; i++) {
+				if (this.inventory[i] == null) {
+					this.inventory[i] = this.armor;
+					System.out.println("You have removed your " + this.armor.getName());
+					setArmor(null);
+					break;
+				} else {
+					System.out.println("You're inventory is full!");
+				}
+			}
+		} else {
+			System.out.println("You have no armor equipped!");
+		}
+	}
+
+	public void equip(String selection) {
+		Item currentWeapon = this.weapon;
+		Item currentArmor = this.armor;
+		int numberSelection;
+
+		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
+			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
+			if (numberSelection < 0 || numberSelection > 9 || this.inventory[numberSelection] == null) {
+				System.out.println("Invalid selection number!");
+			} else if (this.inventory[numberSelection].itemType == ItemType.WEAPON) {
+				setWeapon(this.inventory[numberSelection]);
+				this.inventory[numberSelection] = currentWeapon;
+				System.out.println(this.weapon.getName() + " has been equipped!");
+			} else if (this.inventory[numberSelection].itemType == ItemType.ARMOR) {
+				setArmor(this.inventory[numberSelection]);
+				this.inventory[numberSelection] = currentArmor;
+				System.out.println(this.weapon.getName() + " has been equipped!");
+			} else {
+				System.out.println(this.inventory[numberSelection] + " is not equipable!");
+			}
+		} else {
+			System.out.println("Invalid Selection!");
+		}
+
 	}
 }

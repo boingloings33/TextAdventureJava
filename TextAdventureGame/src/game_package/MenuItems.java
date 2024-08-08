@@ -13,9 +13,12 @@ public class MenuItems {
 	public final static String WEAPON = "weapon";
 	public final static String ARMOR = "armor";
 	public final static String INVENTORY = "inventory";
-	public final static String EQUIPS = "equips";
+	public final static String SLOTS = "slots";
 	public final static String EXAMINE = "examine";
 	public final static String LEVEL  = "level";
+	
+	public final static String REMOVE_WEAPON = "remove weapon";
+	public final static String REMOVE_ARMOR = "remove armor";
 
 	public void listInvalidSelection() {
 		System.out.println("Invalid Selection!");

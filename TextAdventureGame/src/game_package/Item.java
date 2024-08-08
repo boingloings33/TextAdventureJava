@@ -9,13 +9,15 @@ public class Item {
 	private int hpBoost;
 	private int attackBoost;
 	private int defenseBoost;
+	ItemType itemType;
 
-	public Item(String name, String description, int hpBoost, int attackBoost, int defenseBoost) {
+	public Item(String name, String description, int hpBoost, int attackBoost, int defenseBoost, ItemType itemType) {
 		this.name = name;
 		this.description = description;
 		this.hpBoost = hpBoost;
 		this.attackBoost = attackBoost;
 		this.defenseBoost = defenseBoost;
+		this.itemType = itemType;
 	}
 	
 	public int getHpBoost() {
