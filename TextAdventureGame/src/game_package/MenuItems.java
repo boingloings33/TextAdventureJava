@@ -16,6 +16,7 @@ public class MenuItems {
 	public final static String SLOTS = "slots";
 	public final static String EXAMINE = "examine";
 	public final static String LEVEL  = "level";
+	public final static String EQUIP  = "equip";
 	
 	public final static String REMOVE_WEAPON = "remove weapon";
 	public final static String REMOVE_ARMOR = "remove armor";
@@ -29,8 +30,22 @@ public class MenuItems {
 	}
 
 	public void listCommands() {
-		System.out.println(
-				"Enter 'room' to examine room\nEnter 'north' or 'south' or 'east' or 'west' to enter next room");
+		System.out.println("========================================================");
+		System.out.printf("%-20s%s\n", "COMMAND", "EFFECT");
+		System.out.println("--------------------------------------------------------");
+		System.out.printf("%-20s%s\n", ROOM, "| Examine the room you are currently in.");
+		System.out.printf("%-20s%s\n", INVENTORY, "| View inventory");
+		System.out.printf("%-20s%s\n", SLOTS, "| View equipped weapons and armor");
+		System.out.printf("%-20s%s\n", LEVEL, "| View current level/xp");
+		System.out.printf("%-20s%s\n", NORTH, "| Move north one room");
+		System.out.printf("%-20s%s\n", EAST, "| Move east one room");
+		System.out.printf("%-20s%s\n", SOUTH, "| Move south one room");
+		System.out.printf("%-20s%s\n", WEST, "| Move west one room");
+		System.out.printf("%-20s%s\n", ATTACK + " + enemy name", "| Initiate attack on an enemy");
+		System.out.printf("%-20s%s\n", EQUIP + " + slot number", "| Equip armor or weapon from inventory");
+		System.out.printf("%-20s%s\n", REMOVE_WEAPON, "| Remove currently equipped weapon");
+		System.out.printf("%-20s%s\n", REMOVE_ARMOR, "| Remove currently equipped ARMOR");
+		System.out.println("========================================================");
 	}
 
 	public void listDamageToEnemy(Enemy selectedEnemy, int damageGiven) {
