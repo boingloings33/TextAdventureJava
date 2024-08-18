@@ -9,9 +9,9 @@ public class Main {
 
 	public static void main(String[] arg) {
 		String selection = "";
-		int numberSelection;
 		Scanner input = new Scanner(System.in);
 		Player user = new Player();
+		GeneratedLoot food = new GeneratedLoot();
 
 		user.playerSetup(input);
 		commands.listHelp();
@@ -31,31 +31,27 @@ public class Main {
 				commands.listEquippedWeapon(user);
 			} else if (selection.equals(MenuItems.ARMOR)) {
 				commands.listEquippedArmor(user);
-			} else if (selection.equals(MenuItems.INVENTORY)){
+			} else if (selection.equals(MenuItems.INVENTORY)) {
 				commands.listInventory(user);
-			} else if (selection.equals(MenuItems.SLOTS)){
+			} else if (selection.equals(MenuItems.SLOTS)) {
 				commands.listPlayerSlots(user);
-			} else if (selection.equals(MenuItems.LEVEL)){
+			} else if (selection.equals(MenuItems.LEVEL)) {
 				commands.listLevel(user);
-			} else if (selection.equals(MenuItems.REMOVE_WEAPON)){	
+			} else if (selection.equals(MenuItems.HEALTH)) {
+				commands.listHealth(user);
+			} else if (selection.equals(MenuItems.REMOVE_WEAPON)) {
 				user.removeWeapon();
-			} else if (selection.startsWith("equip")){
+			} else if (selection.startsWith(MenuItems.EQUIP)) {
 				user.equip(selection);
-			}		
-			else {
+			} else if (selection.startsWith(MenuItems.DESTROY)) {
+				user.destroy(selection);
+			} else if (selection.startsWith(MenuItems.EAT)) {
+				user.eatFoot(selection);
+			} else {
 				commands.listInvalidSelection();
 				commands.listHelp();
 			}
 
-		}
-	}
-	
-	private static boolean isNumeric(String str) {
-		try {
-			Character.isDigit(str.charAt(str.length() - 1));
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
 		}
 	}
 

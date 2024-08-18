@@ -9,7 +9,7 @@ public class Player {
 	private Item weapon = null;
 	private Item armor = null;
 	private Item[] playerSlots = new Item[2];
-	private Item[] inventory = new Item[10];
+	private Item[] inventory = new Item[2];
 	private GeneratedRooms generatedRooms = new GeneratedRooms();
 	private Room[] rooms = generatedRooms.getRooms();
 	private Room currentRoom = rooms[0];
@@ -26,6 +26,7 @@ public class Player {
 	private String name;
 	private boolean isExploring = true;
 	private boolean isInBattle = false;
+	private boolean inventoryFull = false;
 
 	// Player general traits
 	public void setName(String name) {
@@ -174,11 +175,34 @@ public class Player {
 
 	// Player inventory
 	public void setInventory(Item item) {
+		Scanner input = new Scanner(System.in);
+		String selection;
+		this.inventoryFull = true;
+
 		for (int i = 0; i < this.inventory.length; i++) {
-			if (this.inventory[i] != null) {
+			if (this.inventory[i] == null) {
 				this.inventory[i] = item;
+				this.inventoryFull = false;
+				break;
 			}
 		}
+
+		while (this.inventoryFull) {
+			System.out.println("Inventory is full! Enter 'Destroy' + slot number to make more room.");
+			System.out.println("Or type 'pass' to ignore the loot");
+			selection = input.nextLine();
+			if (selection.startsWith(MenuItems.DESTROY)) {
+				destroy(selection);
+				setInventory(item);
+			} else if (selection.equals(MenuItems.PASS)) {
+				System.out.println(MenuItems.IGNORE);
+				break;
+			} else {
+				System.out.println(MenuItems.INVALID);
+
+			}
+		}
+
 	}
 
 	public Item[] getInventory() {
@@ -187,6 +211,43 @@ public class Player {
 
 	public Item[] getPlayerSlots() {
 		return this.playerSlots;
+	}
+
+	public void setInventoryIsFull(boolean isFull) {
+		this.inventoryFull = isFull;
+	}
+
+	public boolean getInvetoryIsFull() {
+		return this.inventoryFull;
+	}
+
+	public void lootEnemy() {
+		Scanner input = new Scanner(System.in);
+		String selection;
+		GeneratedLoot generated = new GeneratedLoot();
+		Item loot = generated.generateEnemyLoot();
+		boolean isLooting = true;
+
+		if (loot != null) {
+			while (isLooting) {
+				String lootName = loot.getName();
+				System.out.println("The enemy has dropped " + lootName);
+				System.out.println("Would you like to loot it?");
+				selection = input.nextLine().toLowerCase();
+				if (selection.equals("yes")) {
+					this.setInventory(loot);
+					System.out.println("You loot the " + lootName + "!");
+					isLooting = false;
+				} else if (selection.equals(MenuItems.NO)) {
+					System.out.println(MenuItems.PASS);
+					isLooting = false;
+				} else {
+					System.out.println(MenuItems.INVALID);
+				}
+			}
+		} else {
+			System.out.println("The enemy dropped no loot. How unfortunate...");
+		}
 	}
 
 	// Player misc
@@ -211,7 +272,7 @@ public class Player {
 		this.name = input.nextLine();
 		System.out.println(this.name + " is it? Well here's to hoping you try harder than your parents did.");
 		System.out.println("Take this dagger, it's dangerous in here.");
-		setWeapon(GeneratedWeapons.bronzeDagger);
+		setInventory(GeneratedWeapons.bronzeDagger);
 	}
 
 	public void removeWeapon() {
@@ -222,15 +283,15 @@ public class Player {
 					System.out.println("You have unsheathed your " + this.weapon.getName());
 					setWeapon(null);
 					break;
-				} else {
-					System.out.println("You're inventory is full!");
+				} else if (this.inventoryFull) {
+					System.out.println(MenuItems.FULL);
 				}
 			}
 		} else {
 			System.out.println("You have no weapon equipped!");
 		}
 	}
-	
+
 	public void removeArmor() {
 		if (this.armor != null) {
 			for (int i = 0; i < this.inventory.length; i++) {
@@ -240,7 +301,7 @@ public class Player {
 					setArmor(null);
 					break;
 				} else {
-					System.out.println("You're inventory is full!");
+					System.out.println(MenuItems.FULL);
 				}
 			}
 		} else {
@@ -255,8 +316,9 @@ public class Player {
 
 		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
 			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
-			if (numberSelection < 0 || numberSelection > 9 || this.inventory[numberSelection] == null) {
-				System.out.println("Invalid selection number!");
+			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
+					|| this.inventory[numberSelection] == null) {
+				System.out.println("Invalid selection!");
 			} else if (this.inventory[numberSelection].itemType == ItemType.WEAPON) {
 				setWeapon(this.inventory[numberSelection]);
 				this.inventory[numberSelection] = currentWeapon;
@@ -269,8 +331,67 @@ public class Player {
 				System.out.println(this.inventory[numberSelection] + " is not equipable!");
 			}
 		} else {
-			System.out.println("Invalid Selection!");
+			System.out.println(MenuItems.INVALID);
 		}
+	}
 
+	public void destroy(String selection) {
+		int numberSelection;
+		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
+			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
+			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
+					|| this.inventory[numberSelection] == null) {
+				System.out.println("Invalid selection!");
+			} else {
+				System.out.println("You throw away the " + this.inventory[numberSelection].getName());
+				this.inventory[numberSelection] = null;
+				this.inventoryFull = false;
+			}
+		}
+	}
+
+	// Player consumption
+	public void eatFoot(String selection) {
+		int numberSelection = numberSelection(selection, ItemType.REAGENT);
+		if (numberSelection < this.inventory.length + 1) {
+			System.out.println("You eat the " + this.inventory[numberSelection].getName() + "!");
+			this.hp = this.hp + this.inventory[numberSelection].getHpBoost();
+			System.out.println("You now have " + this.getHp() + " health remaining!");
+		}
+	}
+	
+	// Helper functions
+	public int numberSelection(String selection, ItemType itemType) {
+		int numberSelection;
+		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
+			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
+			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
+					|| this.inventory[numberSelection] == null || this.inventory[numberSelection].itemType != itemType) {
+				System.out.println(MenuItems.INVALID);
+				return this.inventory.length + 1;
+			} else {
+				return numberSelection;
+			}
+		} else {
+			System.out.println(MenuItems.INVALID);
+			return this.inventory.length + 1;
+		} 
+	}
+	
+	public int numberSelection(String selection) {
+		int numberSelection;
+		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
+			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
+			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
+					|| this.inventory[numberSelection] == null) {
+				System.out.println(MenuItems.INVALID);
+				return this.inventory.length + 1;
+			} else {
+				return numberSelection;
+			}
+		} else {
+			System.out.println(MenuItems.INVALID);
+			return this.inventory.length + 1;
+		} 
 	}
 }

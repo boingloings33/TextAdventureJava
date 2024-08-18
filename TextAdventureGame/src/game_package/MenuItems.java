@@ -12,11 +12,23 @@ public class MenuItems {
 	public final static String HELP = "help";
 	public final static String WEAPON = "weapon";
 	public final static String ARMOR = "armor";
-	public final static String INVENTORY = "inventory";
+	public final static String INVENTORY = "bag";
 	public final static String SLOTS = "slots";
 	public final static String EXAMINE = "examine";
 	public final static String LEVEL  = "level";
 	public final static String EQUIP  = "equip";
+	public final static String DESTROY  = "destroy";
+	public final static String PASS  = "pass";
+	public final static String NO  = "no";
+	public final static String EAT  = "eat";
+	public final static String HEALTH  = "health";
+	
+	public final static String FULL  = "Your bag is full!";
+	public final static String IGNORE  = "Although tempting, you ignore the loot.";
+	public final static String INVALID  = "Invalid selection!";
+	
+
+
 	
 	public final static String REMOVE_WEAPON = "remove weapon";
 	public final static String REMOVE_ARMOR = "remove armor";
@@ -147,5 +159,9 @@ public class MenuItems {
 		int xpLeft;
 		xpLeft = Player.LEVELS_XP_REQUIRED[user.getLvl() - 1] - user.getXP();
 		System.out.println("You are currently level " + user.getLvl() + " and need " + xpLeft + " xp to level up!");
+	}
+	
+	public void listHealth (Player user) {
+		System.out.println("You currently have " + user.getHp() + " health.");
 	}
 }
