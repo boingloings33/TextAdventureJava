@@ -9,7 +9,8 @@ public class Item {
 	private int hpBoost;
 	private int attackBoost;
 	private int defenseBoost;
-	ItemType itemType;
+	private ItemType itemType;
+	private boolean isEaten = false;
 
 	public Item(String name, String description, int hpBoost, int attackBoost, int defenseBoost, ItemType itemType) {
 		this.name = name;
@@ -42,5 +43,17 @@ public class Item {
 	
 	public String getId() {
 		return this.id;
+	}
+	
+	public ItemType getItemType() {
+		return this.itemType;
+	}
+	
+	public void setIsEaten(boolean isEaten) {
+		this.isEaten = isEaten;
+	}
+	
+	public boolean getIsEaten() {
+		return this.isEaten;
 	}
 }

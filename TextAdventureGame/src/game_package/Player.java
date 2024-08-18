@@ -202,7 +202,6 @@ public class Player {
 
 			}
 		}
-
 	}
 
 	public Item[] getInventory() {
@@ -319,11 +318,11 @@ public class Player {
 			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
 					|| this.inventory[numberSelection] == null) {
 				System.out.println("Invalid selection!");
-			} else if (this.inventory[numberSelection].itemType == ItemType.WEAPON) {
+			} else if (this.inventory[numberSelection].getItemType() == ItemType.WEAPON) {
 				setWeapon(this.inventory[numberSelection]);
 				this.inventory[numberSelection] = currentWeapon;
 				System.out.println(this.weapon.getName() + " has been equipped!");
-			} else if (this.inventory[numberSelection].itemType == ItemType.ARMOR) {
+			} else if (this.inventory[numberSelection].getItemType() == ItemType.ARMOR) {
 				setArmor(this.inventory[numberSelection]);
 				this.inventory[numberSelection] = currentArmor;
 				System.out.println(this.weapon.getName() + " has been equipped!");
@@ -341,7 +340,10 @@ public class Player {
 			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
 			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
 					|| this.inventory[numberSelection] == null) {
-				System.out.println("Invalid selection!");
+				System.out.println(MenuItems.INVALID);
+			} else if (this.inventory[numberSelection].getIsEaten()) {
+				this.inventory[numberSelection] = null;
+				this.inventoryFull = false;
 			} else {
 				System.out.println("You throw away the " + this.inventory[numberSelection].getName());
 				this.inventory[numberSelection] = null;
@@ -357,6 +359,8 @@ public class Player {
 			System.out.println("You eat the " + this.inventory[numberSelection].getName() + "!");
 			this.hp = this.hp + this.inventory[numberSelection].getHpBoost();
 			System.out.println("You now have " + this.getHp() + " health remaining!");
+			this.inventory[numberSelection].setIsEaten(true);
+			destroy(selection);
 		}
 	}
 	
@@ -366,7 +370,7 @@ public class Player {
 		if (Character.isDigit(selection.charAt(selection.length() - 1))) {
 			numberSelection = selection.charAt(selection.length() - 1) - '0' - 1;
 			if (numberSelection < 0 || numberSelection > this.inventory.length - 1
-					|| this.inventory[numberSelection] == null || this.inventory[numberSelection].itemType != itemType) {
+					|| this.inventory[numberSelection] == null || this.inventory[numberSelection].getItemType() != itemType) {
 				System.out.println(MenuItems.INVALID);
 				return this.inventory.length + 1;
 			} else {
