@@ -265,8 +265,9 @@ public class Player {
 
 	public void playerSetup(Scanner input) {
 		System.out.println(
-				"After spending weeks wandering the Goose Creek, a heavy rain crashes down as you stumble into a small cavern... ");
-		System.out.println("Upon entering, {more story stuff here}...... ");
+				"After spending weeks wandering the Goose Creek swamps, a heavy rain crashes down as you stumble into a small cavern... ");
+		System.out.println("Upon entering, you notice a decrepid old geriatric in the corner.");
+		System.out.println("He leans in to ask for your name....");
 		System.out.println("Enter your name:");
 		this.name = input.nextLine();
 		System.out.println(this.name + " is it? Well here's to hoping you try harder than your parents did.");

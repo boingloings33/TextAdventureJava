@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneratedRooms {
 	private Room room00 = new Room(new int[] { 0, 0 }, new String[] { "Rusty dagger", "Empty Bowl" },
-			generateEnemyList(new Enemy("Rat", 1)), "The Cave", true, false, false, false);
+			generateEnemyList(new Enemy("Rat", 1)), "The Goose Creek Catacombs", true, false, false, false);
 	private Room room01 = new Room(new int[] { 0, 1 }, new String[] { "Empty Cup" }, generateEnemyList(new Enemy("Rat", 1), new Enemy("Bat", 2)),
 			"The Cave", false, false, true, false);
 	private Room[] rooms = { room00, room01 };
